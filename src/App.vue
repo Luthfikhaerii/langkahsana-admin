@@ -5,7 +5,7 @@ import Sidebar from './components/Sidebar.vue';
 <template>
   <div class="flex min-h-screen ">
     <Sidebar/>
-    <div class="bg-gray-50 w-full h-min-screen p-6">
+    <div class="bg-gray-50 w-full h-min-screen p-6 ml-68">
       <router-view/>
     </div>
   </div>
