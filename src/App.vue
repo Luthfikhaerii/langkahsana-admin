@@ -3,10 +3,12 @@ import Sidebar from './components/Sidebar.vue';
 </script>
 
 <template>
-  <div class="flex min-h-screen">
+  <div class="flex min-h-screen ">
     <Sidebar/>
+    <div class="bg-gray-50 w-full h-min-screen p-6">
+      <router-view/>
+    </div>
   </div>
-  <p class="text-coklat">hallo world</p>
 </template>
 
 <style scoped>

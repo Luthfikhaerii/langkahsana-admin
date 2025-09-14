@@ -2,17 +2,22 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
-import {createRouter,createWebHistory} from "vue-router"
+import Article from './pages/Article.vue'
+import { createRouter, createWebHistory } from "vue-router"
 
 const router = createRouter({
     routes: [
         {
-            path:"/",
-            component: App
+            path: "/",
+            children: [
+                {
+                    path: "",
+                    component: Article
+                }
+            ],
         }
     ],
     history: createWebHistory()
 })
-
 
 createApp(App).use(router).mount('#app')
