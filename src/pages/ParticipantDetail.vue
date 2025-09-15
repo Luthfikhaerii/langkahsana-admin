@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps, onMounted,ref } from 'vue';
 
-const {id} = defineProps(['id'])
+const data = ref<any>([])
 
-
+onMounted(async()=>{
+    
+})
 </script>
 <template>
     <div class="border border-gray-100 shadow-sm bg-white w-full h-full ">
@@ -32,8 +34,8 @@ const {id} = defineProps(['id'])
                                 <th class="px-4 py-4">Bukti Transfer</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100 text-sm">
-                            <tr class=" text-center">
+                        <tbody  class="divide-y divide-gray-100 text-sm">
+                            <tr v-for="value in data" :key="value.id" class=" text-center">
                                 <td class="px-4 py-4">1</td>
                                 <td class="px-4 py-4">Luthfi Khaeri Ihsan</td>
                                 <td class="px-4 py-4">makan</td>

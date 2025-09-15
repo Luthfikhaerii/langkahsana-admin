@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue"
+import { ref,reactive } from "vue"
 import { QuillEditor } from "@vueup/vue-quill"
 import "@vueup/vue-quill/dist/vue-quill.snow.css"
 

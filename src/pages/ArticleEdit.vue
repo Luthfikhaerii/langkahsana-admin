@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watchEffect } from "vue"
+import { ref, onMounted } from "vue"
 import { QuillEditor } from "@vueup/vue-quill"
 import "@vueup/vue-quill/dist/vue-quill.snow.css"
 
@@ -40,6 +40,10 @@ function removeBlock(index) {
 function submitArticle() {
     console.log("Article submitted:", article.value)
 }
+
+onMounted(async()=>{
+    
+})
 
 </script>
 <template>
