@@ -7,6 +7,11 @@ import Trip from './pages/Trip.vue'
 import Participant from './pages/Participant.vue'
 import ParticipantDetail from './pages/ParticipantDetail.vue'
 import { createRouter, createWebHistory } from "vue-router"
+import ArticleEdit from './pages/ArticleEdit.vue'
+import ArticleAdd from './pages/ArticleAdd.vue'
+import TripEdit from './pages/TripEdit.vue'
+import TripAdd from './pages/TripAdd.vue'
+import ParticipantAdd from './pages/ParticipantAdd.vue'
 
 const router = createRouter({
     routes: [
@@ -15,21 +20,40 @@ const router = createRouter({
             children: [
                 {
                     path: "",
-                    component: Article
+                    component: Article,
                 },
                 {
-                    path:"trip",
-                    component:Trip
+                    path: ":id",
+                    component: ArticleEdit
                 },
                 {
-                    path:"participant",
-                    component:Participant,
-                    children: [
-                        {
-                            path : ":id",
-                            component:ParticipantDetail
-                        }
-                    ]
+                    path: "add",
+                    component: ArticleAdd
+                },
+                
+                {
+                    path: "trip",
+                    component: Trip,
+                },
+                {
+                    path: "trip/:id",
+                    component: TripEdit
+                },
+                {
+                    path: "trip/add",
+                    component: TripAdd
+                },
+                {
+                    path: "participant",
+                    component: Participant,
+                },
+                {
+                    path: "participant/:id",
+                    component: ParticipantDetail
+                },
+                {
+                    path: "participant/add",
+                    component: ParticipantAdd
                 }
             ],
         }
