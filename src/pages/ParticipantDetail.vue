@@ -35,14 +35,14 @@ onMounted(async()=>{
                             </tr>
                         </thead>
                         <tbody  class="divide-y divide-gray-100 text-sm">
-                            <tr v-for="value in data" :key="value.id" class=" text-center">
-                                <td class="px-4 py-4">1</td>
-                                <td class="px-4 py-4">Luthfi Khaeri Ihsan</td>
-                                <td class="px-4 py-4">makan</td>
-                                <td class="px-4 py-4">makan</td>
-                                <td class="px-4 py-4">makan</td>
-                                <td class="px-4 py-4">makan</td>
-                                <td class="px-4 py-4"><a class="text-xs bg-blue-400 ttext-center px-4 py-1 text-white font-semibold rounded-sm">View</a></td>
+                            <tr v-for="(value,i) in data" :key="value.id" class=" text-center">
+                                <td class="px-4 py-4">{{ i+1 }}</td>
+                                <td class="px-4 py-4">{{ value.name }}</td>
+                                <td class="px-4 py-4">{{ value.no_whatsapp }}</td>
+                                <td class="px-4 py-4">{{ value.no_darurat }}</td>
+                                <td class="px-4 py-4">{{ value.alamat }}</td>
+                                <td class="px-4 py-4">{{ value.meet_point }}</td>
+                                <td class="px-4 py-4"><a :href="value.bukti_pembayaran" class="text-xs bg-blue-400 ttext-center px-4 py-1 text-white font-semibold rounded-sm">View</a></td>
                             </tr>
                         </tbody>
                     </table>

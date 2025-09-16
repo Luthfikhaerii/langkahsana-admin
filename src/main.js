@@ -12,6 +12,7 @@ import ArticleAdd from './pages/ArticleAdd.vue'
 import TripEdit from './pages/TripEdit.vue'
 import TripAdd from './pages/TripAdd.vue'
 import ParticipantAdd from './pages/ParticipantAdd.vue'
+import Login from './pages/Login.vue'
 
 const router = createRouter({
     routes: [
@@ -56,6 +57,10 @@ const router = createRouter({
                     component: ParticipantAdd
                 }
             ],
+        },
+        {
+            path:"/login",
+            component: Login
         }
     ],
     history: createWebHistory()
