@@ -7,6 +7,7 @@ const article = ref({
     cover: null,
     title: "",
     date: "",
+    kuota:"",
     price: 0,
     location:"",
     meetpoint:"",
@@ -45,7 +46,7 @@ function submitArticle() {
 }
 
 onMounted(async()=>{
-    
+
 })
 </script>
 
@@ -84,6 +85,13 @@ onMounted(async()=>{
                 <div>
                     <label class="block text-lg font-medium mb-1">Price</label>
                     <input v-model="article.price" type="number"
+                        class="w-full border border-gray-300 shadow rounded-lg px-3 py-2 text-sm" required />
+                </div>
+
+                <!-- Kuota -->
+                <div>
+                    <label class="block text-lg font-medium mb-1">Kuota</label>
+                    <input v-model="article.kuota" type="number"
                         class="w-full border border-gray-300 shadow rounded-lg px-3 py-2 text-sm" required />
                 </div>
 

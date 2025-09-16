@@ -1,23 +1,26 @@
 <script setup lang="ts">
 import Card from '@/components/Card.vue'
 import Pagination from '@/components/Pagination.vue';
-import { ref,onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const data = ref<any>([])
 
-onMounted(async()=>{
-    const res:Response = await fetch("/")
-    data.value = res.json() 
+onMounted(async () => {
+    const res: Response = await fetch("/")
+    data.value = res.json()
 })
 
 </script>
 <template>
-    <div class="border border-gray-100 shadow-sm bg-white w-full h-full ">
+    <div class="border border-gray-100 shadow-sm bg-white w-full h-full flex  flex-col">
         <p class="text-custom-black text-3xl mx-14 mt-10 font-semibold">Article</p>
-        <hr class="border border-gray-300 mx-14 my-8"/>
-        <div  class="flex flex-wrap gap-10 px-14 pb-10 w-full">
-          <Card v-for="(value,idx) in data" :key="value.id" :title="value.title"/>
+        <hr class="border border-gray-300 mx-14 my-8" />
+        <div class="flex flex-1 flex-wrap gap-10 px-14 pb-10 w-full">
+            <Card v-for="value in data" :key="value.id" :title="value.title" :description="value.description" :image="value.image"/>
         </div>
-        <Pagination/>
-      </div>
+        <div class="w-full justify-center mt-4 mb-10 flex items-end">
+            <Pagination />
+        </div>
+
+    </div>
 </template>

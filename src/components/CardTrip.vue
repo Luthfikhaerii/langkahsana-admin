@@ -2,13 +2,13 @@
 import {defineProps} from 'vue';
 import { useRouter } from 'vue-router';
 
-const {id,title,date,price,status} = defineProps(['id','title','date','price','status'])
+const {id,title,date,price,status,image} = defineProps(['id','title','date','price','status','image'])
 const router = useRouter()
 
 </script>
 <template>
     <div class="w-64 h-88 border border-gray-200 shadow-lg rounded-lg flex flex-col">
-        <img src="/gunung.jpg" alt="foto" class="rounded-lg w-60 h-44 m-auto mt-2" />
+        <img :src="image" alt="foto" class="rounded-lg w-60 h-44 m-auto mt-2" />
         <p class="font-bold text-sm line-clamp-2 px-4 mt-3 mb-1">{{ title }}</p>
         <p class="text-xs text-gray-600 mb-2 px-4">{{ date }}</p>
         <div class="flex w-full justify-between px-4 mb-2 items-center">
