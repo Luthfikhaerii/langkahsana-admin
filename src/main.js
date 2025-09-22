@@ -13,11 +13,17 @@ import TripEdit from './pages/TripEdit.vue'
 import TripAdd from './pages/TripAdd.vue'
 import ParticipantAdd from './pages/ParticipantAdd.vue'
 import Login from './pages/Login.vue'
+import MainLayout from './layouts/MainLayout.vue'
 
 const router = createRouter({
     routes: [
         {
+            path:"/login",
+            component: Login
+        },
+        {
             path: "/",
+            component: MainLayout,
             children: [
                 {
                     path: "",
@@ -58,10 +64,7 @@ const router = createRouter({
                 }
             ],
         },
-        {
-            path:"/login",
-            component: Login
-        }
+
     ],
     history: createWebHistory()
 })
