@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "target": "ESNext",
+    "module": "ESNext", 
+    "moduleResolution": "Node",
+    "types": ["vite/client"],
+    "baseUrl": "./src"
+  },
+  "exclude": ["node_modules", "dist"]
+}

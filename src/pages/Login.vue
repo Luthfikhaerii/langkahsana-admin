@@ -1,4 +1,5 @@
 <script setup>
+import { env } from '../config/env'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -8,18 +9,20 @@ const router = useRouter()
 
 const handleLogin = async () => {
   try{
-    const res = await fetch(import.meta.env.VITE_API_URL+'/user/login',{
+    const res = await fetch(env.apiUrl+'/user/login',{
         method: 'POST',
         headers: {
             'Content-type':'application/json'
         },
         body: JSON.stringify({
-            email,password
+            email:email.value,password:password.value
         })
     })
-    const status = await res.json()
-    if(status.success){
-        router.replace('/')
+    console.log(typeof res)
+    const data = await res.json()
+    if(data?.success == true){
+      console.log('woyy')
+      router.replace('/')
     }
   }catch(err){
     console.log(err)
@@ -47,8 +50,6 @@ const handleLogin = async () => {
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt in qui numquam tempore sapiente itaque!
       </p>
     </div>
-
-
       <form @submit.prevent="handleLogin" class="space-y-6">
         <!-- Email -->
         <div>

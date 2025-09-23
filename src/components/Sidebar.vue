@@ -9,10 +9,27 @@ import Logout from '@/assets/logout.svg'
 import LogoutWhite from '@/assets/logout-white.svg'
 import { useRoute, useRouter } from 'vue-router';
 import { ref } from 'vue';
+import { env } from '@/config/env';
 
 const route = useRoute()
 const router = useRouter()
 const isHover = ref(false)
+
+const handleLogout = async ()=>{
+    try{
+        const res = await fetch(env.apiUrl+"/user/logout",{
+            method:'DELETE',
+            credentials:'include'
+        })
+        const json = await res.json()
+        if(json.success){
+            alert(json.message)
+            router.replace('/login')
+        }   
+    }catch(err){
+        alert(err)
+    }
+}
 
 </script>
 <template>
@@ -35,10 +52,10 @@ const isHover = ref(false)
                     class="w-[20px] h-[20px]" />
                 <p class="text-lg ml-4">Participant</p>
             </di>
-            <di :class="['mb-2 px-6 py-3 items-center flex rounded-2xl cursor-pointer', 'hover:bg-red-600 hover:text-white', 'text-custom-black']" @mouseenter="isHover = true" @mouseleave="isHover = false" @click="">
+            <div v-on:click="handleLogout()" :class="['mb-2 px-6 py-3 items-center flex rounded-2xl cursor-pointer', 'hover:bg-red-600 hover:text-white', 'text-custom-black']" @mouseenter="isHover = true" @mouseleave="isHover = false" @click="">
                 <img :src="isHover == true ?LogoutWhite:Logout" alt="logout" class="w-5 h-5 ml-[2px] cursor-pointer" />
                 <p class="text-lg ml-[15px]">Logout</p>
-            </di>
+            </div>
         </div>
 
     </div>
