@@ -12,9 +12,12 @@ export const useAuth = ()=>{
 
     async function me(){
         try{
-            const res = await fetch(env.apiUrl+"/user/auth")
+            const res = await fetch(env.apiUrl+"/user/auth",{
+                credentials:'include'
+            })
             const json = await res.json()
-            user.value = json.data
+            user.value.email = json.data.email
+            user.value.role  = json.data.role
         }catch(err){
             error.value = err
         }
@@ -22,7 +25,8 @@ export const useAuth = ()=>{
 
     if(!user){
         me()
+        console.log('awaa')
     }
 
-    return {user,error,setAuth}
+    return {user:user.value,error,setAuth,me}
 }

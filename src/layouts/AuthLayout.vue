@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { useAuth } from '@/composables/useAuth';
+import { useAuth } from '../composables/useAuth';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-const auth = useAuth()
+const {user} = useAuth()
 const router = useRouter()
 
 onMounted(async () => {
-  console.log(auth)
-  if (!auth) {
+  if (!user?.email&&user?.role!=='admin') {
     router.push('/login')
   }})
 </script>

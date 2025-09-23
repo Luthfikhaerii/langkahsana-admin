@@ -6,8 +6,8 @@ import { ref, onMounted } from 'vue';
 const data = ref<any>([])
 
 onMounted(async () => {
-    const res: Response = await fetch("/")
-    data.value = res.json()
+    // const res: Response = await fetch("/")
+    // data.value = res.json()
 })
 
 </script>
