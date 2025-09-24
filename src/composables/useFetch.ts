@@ -1,7 +1,7 @@
 import { env } from "@/config/env"
 import { ref } from "vue"
 
-export const useFetch = async () => {
+export const useFetch = () => {
     const data = ref(null)
     const loading = ref(false)
     const error = ref(null)
@@ -24,5 +24,5 @@ export const useFetch = async () => {
         }
     }
 
-    return { data:data.value, loading:loading.value, error:error.value, fetchData }
+    return { data:data, loading:loading, error:error, fetchData }
 }

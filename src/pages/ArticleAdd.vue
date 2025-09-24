@@ -12,36 +12,51 @@ const article = ref({
     title: "",
     date: "",
     description: "",
-    content: []
+    contents: []
 })
 
 
 // add block
 function addBlock() {
-    article.value.content.push({ type: "text", value: "" })
+    article.value.contents.push({ type: "text" })
 }
 
 // remove block
 function removeBlock(index) {
-    article.value.content.splice(index, 1)
+    article.value.contents.splice(index, 1)
 }
 
 // handle content image upload
 async function onContentImageChange(e, index) {
     const file = e.target.files[0]
     if (file) {
+        if (article.value.contents[index].content) {
+            const oldUrl = article.value.contents[index].content
+            const oldPath = oldUrl.split(`/storage/v1/object/public/images/`)[1]
+            if (oldPath) {
+                await supabase.storage.from("images").remove([oldPath])
+            }
+        }
         const filename = `article/${Date.now()}-${e.target.files[0].name}`
-        const { error } = await supabase.storage.from("Langkahsana").upload(filename, e.target.files[0])
+        const { error } = await supabase.storage.from("images").upload(filename, e.target.files[0])
         if (!error) {
-            const { data: url } = supabase.storage.from('Langkahsana').getPublicUrl(filename)
-            article.value.content[index].value = url.publicUrl
+            const { data: url } = supabase.storage.from('images').getPublicUrl(filename)
+            article.value.contents[index].content = url.publicUrl
         }
     }
 }
 
 const onImageChange = async (e) => {
-    console.log(e)
     if (e.target.files[0]) {
+        if (article.value.image) {
+            console.log(article.value.image)
+            const oldUrl = article.value.image
+            const oldPath = oldUrl.split(`/storage/v1/object/public/images/`)[1]
+
+            if (oldPath) {
+                await supabase.storage.from("images").remove([oldPath])
+            }
+        }
         const filename = `article/${Date.now()}-${e.target.files[0].name.replace(/\s+/g, "-")}`
         const file = e.target.files[0]
         const { error } = await supabase.storage.from("images").upload(filename, file)
@@ -53,21 +68,22 @@ const onImageChange = async (e) => {
 }
 
 const onSubmit = async () => {
+    console.log(article.value)
     await fetchData("/article", {
         method: "POST",
         body: JSON.stringify({
-            image: article.image.value,
-            title: article.title.value,
-            date: article.date.value,
-            description: article.description.value,
-            content: article.content.value
+            image: article.value.image,
+            title: article.value.title,
+            date: new Date(article.value.date),
+            description: article.value.description,
+            contents: article.value.contents
         })
     })
-    if (data.success) {
+    if (data.value.success) {
         alert(data.message)
     }
-    if (error) {
-        alert(error.message)
+    if (error.value) {
+        alert(error.value.message)
     }
 }
 
@@ -79,7 +95,7 @@ const onSubmit = async () => {
         <hr class="border border-gray-300 mx-14 my-8" />
         <div class="gap-10 px-14 pb-10 w-full">
             <form @submit.prevent="onSubmit" class="space-y-6 mb-8">
-                
+
                 <!-- Upload cover image -->
                 <div>
                     <label class="block text-lg font-medium mb-1">Cover Image</label>
@@ -105,32 +121,35 @@ const onSubmit = async () => {
                 </div>
 
                 <!-- Description -->
-                <QuillEditor v-model="article.description" content-type="html" theme="snow"
-                    class="bg-white rounded-lg border border-gray-300 shadow" />
+                <div>
+                    <label class="block text-lg font-medium mb-1">Description</label>
+                    <QuillEditor v-model:content="article.description" content-type="html" theme="snow"
+                        class="bg-white rounded-lg border border-gray-300 shadow" />
+                </div>
 
                 <!-- Dynamic Content -->
                 <div>
                     <label class="block text-lg font-medium mb-2">Content</label>
                     <div class="space-y-4">
-                        <div v-for="(block, index) in article.content" :key="index"
+                        <div v-for="(block, index) in article.contents" :key="index"
                             class="p-4 border border-gray-300 shadow rounded-lg bg-gray-50 space-y-2">
                             <!-- Choose type -->
-                            <select v-model="block.type"
+                            <select v-model="article.contents[index].type"
                                 class="border rounded-lg px-2 py-1 text-sm border-gray-300 shadow w-20">
                                 <option value="text">Text</option>
                                 <option value="image">Image</option>
                             </select>
 
                             <!-- Text input -->
-                            <QuillEditor v-if="block.type === 'text'" v-model:content="block.value" content-type="html"
+                            <QuillEditor v-if="article.contents[index].type === 'text'" v-model:content="block.content" content-type="html"
                                 theme="snow" class="bg-white rounded-lg border border-gray-300 shadow" />
 
                             <!-- Image input -->
                             <div v-else>
                                 <input type="file" accept="image/*" @change="e => onContentImageChange(e, index)"
                                     class="text-sm" />
-                                <div v-if="block.value" class="mt-2">
-                                    <img :src="block.value" alt="Preview"
+                                <div v-if="block.content" class="mt-2">
+                                    <img :src="block.content" alt="Preview"
                                         class="w-32 h-32 object-cover rounded-lg border" />
                                 </div>
                             </div>
