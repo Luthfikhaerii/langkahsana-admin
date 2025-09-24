@@ -1,30 +1,12 @@
 <script setup>
 import Sidebar from '@/components/Sidebar.vue';
 import { useAuth } from '../composables/useAuth';
-import { onMounted,ref } from 'vue';
-import { useRouter } from 'vue-router';
-import {env} from '../config/env'
+import { onMounted } from 'vue';
 
-const router = useRouter()
-const auth = ref(false)
-const error = ref(null)
+const {user, check } = useAuth()
 
-onMounted(async () => {
-  if (!auth.value) {
-    try {
-      const res = await fetch(env.apiUrl + "/user/auth", {
-        credentials: 'include'
-      })
-      const json = await res.json()
-      console.log(json)
-      if (json.data.role == 'admin') {
-        auth.value = true
-      }
-    } catch (err) {
-      router.push('/login')
-    }
-    
-  }
+onMounted(() => {
+    check()
 })
 </script>
 

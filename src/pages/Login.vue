@@ -1,32 +1,11 @@
 <script setup>
-import { env } from '../config/env'
+import { useAuth } from '@/composables/useAuth'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 const email = ref('')
 const password = ref('')
-const router = useRouter()
+const {login} = useAuth()
 
-const handleLogin = async () => {
-  try {
-    const res = await fetch(env.apiUrl + '/user/login', {
-      method: 'POST',
-      headers: {
-        "Content-type": "application/json"
-      },
-      body: JSON.stringify({
-        email: email.value, password: password.value
-      }),
-      credentials: 'include'
-    })
-    const data = await res.json()
-    if (data?.success == true) {
-      router.replace('/')
-    }
-  } catch (err) {
-    console.log(err)
-  }
-}
 </script>
 
 <template>
@@ -40,7 +19,7 @@ const handleLogin = async () => {
               Sign In Admin
             </h2>
           </div>
-          <form @submit.prevent="handleLogin" class="space-y-6">
+          <form @submit.prevent="login({email,password})" class="space-y-6">
             <!-- Email -->
             <div>
               <label for="email" class="block text-sm font-medium text-gray-700">Email</label>

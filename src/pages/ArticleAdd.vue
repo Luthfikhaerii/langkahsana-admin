@@ -2,30 +2,19 @@
 import { ref } from "vue"
 import { QuillEditor } from "@vueup/vue-quill"
 import "@vueup/vue-quill/dist/vue-quill.snow.css"
+import { useFetch } from "@/composables/useFetch"
+import { supabase } from "@/utils/supabase"
+
+const { data, fetchData, error } = useFetch()
 
 const article = ref({
-    cover: null,
+    image: null,
     title: "",
     date: "",
     description: "",
     content: []
 })
 
-// handle cover upload
-function onCoverChange(e) {
-    const file = e.target.files[0]
-    if (file) {
-        article.value.cover = URL.createObjectURL(file)
-    }
-}
-
-// handle content image upload
-function onContentImageChange(e, index) {
-    const file = e.target.files[0]
-    if (file) {
-        article.value.content[index].value = URL.createObjectURL(file)
-    }
-}
 
 // add block
 function addBlock() {
@@ -37,26 +26,68 @@ function removeBlock(index) {
     article.value.content.splice(index, 1)
 }
 
-// submit
-function submitArticle() {
-    console.log("Article submitted:", article.value)
+// handle content image upload
+async function onContentImageChange(e, index) {
+    const file = e.target.files[0]
+    if (file) {
+        const filename = `article/${Date.now()}-${e.target.files[0].name}`
+        const { error } = await supabase.storage.from("Langkahsana").upload(filename, e.target.files[0])
+        if (!error) {
+            const { data: url } = supabase.storage.from('Langkahsana').getPublicUrl(filename)
+            article.value.content[index].value = url.publicUrl
+        }
+    }
 }
+
+const onImageChange = async (e) => {
+    console.log(e)
+    if (e.target.files[0]) {
+        const filename = `article/${Date.now()}-${e.target.files[0].name.replace(/\s+/g, "-")}`
+        const file = e.target.files[0]
+        const { error } = await supabase.storage.from("images").upload(filename, file)
+        if (!error) {
+            const { data: url } = supabase.storage.from('images').getPublicUrl(filename)
+            article.value.image = url.publicUrl
+        }
+    }
+}
+
+const onSubmit = async () => {
+    await fetchData("/article", {
+        method: "POST",
+        body: JSON.stringify({
+            image: article.image.value,
+            title: article.title.value,
+            date: article.date.value,
+            description: article.description.value,
+            content: article.content.value
+        })
+    })
+    if (data.success) {
+        alert(data.message)
+    }
+    if (error) {
+        alert(error.message)
+    }
+}
+
+
 </script>
 <template>
     <div class="border border-gray-100 shadow-sm bg-white w-full h-full ">
         <p class="text-custom-black text-3xl mx-14 mt-10 font-semibold">Create Article</p>
         <hr class="border border-gray-300 mx-14 my-8" />
         <div class="gap-10 px-14 pb-10 w-full">
-            <form @submit.prevent="submitArticle" class="space-y-6 mb-8">
+            <form @submit.prevent="onSubmit" class="space-y-6 mb-8">
+                
                 <!-- Upload cover image -->
                 <div>
                     <label class="block text-lg font-medium mb-1">Cover Image</label>
-                    <div v-if="article.cover" class="my-4">
-                        <img :src="article.cover" alt="Preview" class="w-32 h-32 object-cover rounded-lg border" />
+                    <div v-if="article.image" class="my-4">
+                        <img :src="article.image" alt="Preview" class="w-32 h-32 object-cover rounded-lg border" />
                     </div>
-                    <input type="file" @change="onCoverChange" accept="image/*"
+                    <input type="file" @change="onImageChange" accept="image/*"
                         class="block text-sm rounded-lg border border-gray-300 shadow" />
-
                 </div>
 
                 <!-- Title -->
@@ -74,8 +105,8 @@ function submitArticle() {
                 </div>
 
                 <!-- Description -->
-                <QuillEditor v-if="block.type === 'text'" v-model:description="block.value" content-type="html"
-                                theme="snow" class="bg-white rounded-lg border border-gray-300 shadow" />
+                <QuillEditor v-model="article.description" content-type="html" theme="snow"
+                    class="bg-white rounded-lg border border-gray-300 shadow" />
 
                 <!-- Dynamic Content -->
                 <div>
