@@ -1,4 +1,5 @@
 import { env } from "@/config/env"
+import axios from "axios"
 import { ref } from "vue"
 
 export const useFetch = () => {
@@ -6,17 +7,17 @@ export const useFetch = () => {
     const loading = ref(false)
     const error = ref(null)
 
-    const fetchData = async (path: string, options?: RequestInit) => {
+    const fetchData = async (path: string, options?: any) => {
         loading.value = true
         error.value = null
         try {
-            const res = await fetch(env.apiUrl + path, {
+            const res = await axios(env.apiUrl + path, {
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
+                withCredentials: true,
                 ...options
             })
-            const json = await res.json()
-            data.value = json
+            console.log(res)
+            data.value = res.data
             loading.value = false
         } catch (err) {
             console.log(err)

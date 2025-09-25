@@ -4,8 +4,10 @@ import { QuillEditor } from "@vueup/vue-quill"
 import "@vueup/vue-quill/dist/vue-quill.snow.css"
 import { useFetch } from "@/composables/useFetch"
 import { supabase } from "@/utils/supabase"
+import { useRouter } from "vue-router"
 
 const { data, fetchData, error } = useFetch()
+const router = useRouter()
 
 const article = ref({
     image: null,
@@ -80,7 +82,8 @@ const onSubmit = async () => {
         })
     })
     if (data.value.success) {
-        alert(data.message)
+        alert(data.value.message)
+        router.replace('/add')
     }
     if (error.value) {
         alert(error.value.message)
@@ -141,11 +144,11 @@ const onSubmit = async () => {
                             </select>
 
                             <!-- Text input -->
-                            <QuillEditor v-if="article.contents[index].type === 'text'" v-model:content="block.content" content-type="html"
+                            <QuillEditor v-if="article.contents[index].type == 'text'" v-model:content="block.content" content-type="html"
                                 theme="snow" class="bg-white rounded-lg border border-gray-300 shadow" />
 
                             <!-- Image input -->
-                            <div v-else>
+                            <div v-else-if="article.contents[index].type == 'image'">
                                 <input type="file" accept="image/*" @change="e => onContentImageChange(e, index)"
                                     class="text-sm" />
                                 <div v-if="block.content" class="mt-2">
