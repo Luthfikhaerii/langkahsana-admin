@@ -81,6 +81,7 @@ const onSubmit = async () => {
             contents: article.value.contents
         })
     })
+    console.log(data)
     if (data.value.success) {
         alert(data.value.message)
         router.replace('/add')

@@ -11,13 +11,13 @@ export const useFetch = () => {
         loading.value = true
         error.value = null
         try {
-            const res = await axios(env.apiUrl + path, {
+            const res = await fetch(env.apiUrl + path,{
                 headers: { 'Content-Type': 'application/json' },
-                withCredentials: true,
+                credentials: 'include',
                 ...options
             })
-            console.log(res)
-            data.value = res.data
+            const json = await res.json()
+            data.value = json
             loading.value = false
         } catch (err) {
             console.log(err)

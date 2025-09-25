@@ -73,7 +73,7 @@ onMounted(async()=>{
                 <!-- Title -->
                 <div>
                     <label class="block text-lg font-medium mb-1">Title</label>
-                    <input v-model="article.data.title" type="text"
+                    <input v-model="article.data.title"  type="text"
                         class="w-full border border-gray-300 shadow rounded-lg px-3 py-2 text-sm" required />
                 </div>
 
@@ -88,7 +88,7 @@ onMounted(async()=>{
                 <div>
                     <label class="block text-lg font-medium mb-2">Content</label>
                     <div class="space-y-4">
-                        <div v-for="(block, index) in normalizeContents(article.data.contents)" :key="index"
+                        <div v-for="(block, index) in article.data.contents" :key="index"
                             class="p-4 border border-gray-300 shadow rounded-lg bg-gray-50 space-y-2">
                             <!-- Choose type -->
                              <p>{{ block.type }}</p>
@@ -99,7 +99,7 @@ onMounted(async()=>{
                             </select>
 
                             <!-- Text input -->
-                            <QuillEditor v-if="block.type == 'text'" v-model:content="block.type" content-type="html"
+                            <QuillEditor v-if="block.type == 'text'" v-model:content="block.content" content-type="html"
                                 theme="snow" class="bg-white rounded-lg border border-gray-300 shadow" />
 
                             <!-- Image input -->
