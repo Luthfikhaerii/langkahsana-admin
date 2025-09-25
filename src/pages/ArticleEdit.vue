@@ -4,6 +4,7 @@ import { QuillEditor } from "@vueup/vue-quill"
 import "@vueup/vue-quill/dist/vue-quill.snow.css"
 import { useFetch } from "@/composables/useFetch"
 import { useRoute } from "vue-router"
+import { normalizeContents } from "@/utils/normalizeContents"
 
 const route = useRoute()
 const {data:article,fetchData,error} = useFetch()
@@ -87,9 +88,10 @@ onMounted(async()=>{
                 <div>
                     <label class="block text-lg font-medium mb-2">Content</label>
                     <div class="space-y-4">
-                        <div v-for="(block, index) in article.data.contents" :key="index"
+                        <div v-for="(block, index) in normalizeContents(article.data.contents)" :key="index"
                             class="p-4 border border-gray-300 shadow rounded-lg bg-gray-50 space-y-2">
                             <!-- Choose type -->
+                             <p>{{ block.type }}</p>
                             <select v-model="block.type"
                                 class="border rounded-lg px-2 py-1 text-sm border-gray-300 shadow w-20">
                                 <option value="text">Text</option>
@@ -97,7 +99,7 @@ onMounted(async()=>{
                             </select>
 
                             <!-- Text input -->
-                            <QuillEditor v-if="block.type === '<p>text</p>'" v-model:content="block.type" content-type="html"
+                            <QuillEditor v-if="block.type == 'text'" v-model:content="block.type" content-type="html"
                                 theme="snow" class="bg-white rounded-lg border border-gray-300 shadow" />
 
                             <!-- Image input -->
