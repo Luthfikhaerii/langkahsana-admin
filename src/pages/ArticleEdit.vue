@@ -1,13 +1,14 @@
 <script setup>
-import { ref, onMounted,defineProps } from "vue"
+import { ref, onMounted, defineProps } from "vue"
 import { QuillEditor } from "@vueup/vue-quill"
 import "@vueup/vue-quill/dist/vue-quill.snow.css"
 import { useFetch } from "@/composables/useFetch"
-import { useRoute } from "vue-router"
-import { normalizeContents } from "@/utils/normalizeContents"
+import { useRoute, useRouter } from "vue-router"
+import { env } from "@/config/env"
 
 const route = useRoute()
-const {data:article,fetchData,error} = useFetch()
+const router = useRouter()
+const { data: article, fetchData, error } = useFetch()
 
 // handle cover upload
 function onCoverChange(e) {
@@ -18,35 +19,72 @@ function onCoverChange(e) {
 }
 
 // handle content image upload
-function onContentImageChange(e, index) {
+async function onContentImageChange(e, index) {
     const file = e.target.files[0]
     if (file) {
-        article.value.content[index].value = URL.createObjectURL(file)
+        if (article.value.data.contents[index].content) {
+            const oldUrl = article.value.contents[index].content
+            const oldPath = oldUrl.split(`/storage/v1/object/public/images/`)[1]
+            if (oldPath) {
+                await supabase.storage.from("images").remove([oldPath])
+            }
+        }
+        const filename = `article/${Date.now()}-${e.target.files[0].name}`
+        const { error } = await supabase.storage.from("images").upload(filename, e.target.files[0])
+        if (!error) {
+            const { data: url } = supabase.storage.from('images').getPublicUrl(filename)
+            article.value.data.contents[index].content = url.publicUrl
+        }
     }
 }
 
 // add block
 function addBlock() {
-    article.value.content.push({ type: "text", value: "" })
+    article.value.data.contents.push({ type: "text", content: "" })
 }
 
 // remove block
 function removeBlock(index) {
-    article.value.content.splice(index, 1)
+    article.value.data.contents.splice(index, 1)
 }
 
 // submit
-function submitArticle() {
-    console.log("Article submitted:", article.value)
+const submitArticle = async () => {
+    try {
+        const res = await fetch(env.apiUrl+`/article/${route.params.id}`, {
+                        method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                image: article.value.data.image,
+                title: article.value.data.title,
+                date: article.value.data.date,
+                description: article.value.data.description,
+                contents: article.value.data.contents
+            })
+        })
+        console.log(res)
+        const json = await res.json()
+        console.log(json)
+        // if (json.value.success) {
+        //     alert(json.message)
+        //     router.replace('/')
+        // }
+    } catch (err) {
+        alert(err)
+    }
+
 }
 
-onMounted(async()=>{
-    
+onMounted(async () => {
+
     await fetchData(`/article/${route.params.id}`)
-    if(error.value){
+    if (error.value) {
         alert(error.value.message)
     }
-    if(article.value){
+    if (article.value) {
         console.log(article.value)
         console.log(article.value.data)
     }
@@ -73,14 +111,14 @@ onMounted(async()=>{
                 <!-- Title -->
                 <div>
                     <label class="block text-lg font-medium mb-1">Title</label>
-                    <input v-model="article.data.title"  type="text"
+                    <input v-model="article.data.title" type="text"
                         class="w-full border border-gray-300 shadow rounded-lg px-3 py-2 text-sm" required />
                 </div>
 
                 <!-- Date -->
                 <div>
                     <label class="block text-lg font-medium mb-1">Date</label>
-                    <input v-model="article.data.date" type="date"
+                    <input v-model="article.data.date" type="text"
                         class="w-full border border-gray-300 shadow rounded-lg px-3 py-2 text-sm" required />
                 </div>
 
@@ -91,7 +129,7 @@ onMounted(async()=>{
                         <div v-for="(block, index) in article.data.contents" :key="index"
                             class="p-4 border border-gray-300 shadow rounded-lg bg-gray-50 space-y-2">
                             <!-- Choose type -->
-                             <p>{{ block.type }}</p>
+                            <p>{{ block.type }}</p>
                             <select v-model="block.type"
                                 class="border rounded-lg px-2 py-1 text-sm border-gray-300 shadow w-20">
                                 <option value="text">Text</option>
