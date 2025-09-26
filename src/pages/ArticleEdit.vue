@@ -5,6 +5,7 @@ import "@vueup/vue-quill/dist/vue-quill.snow.css"
 import { useFetch } from "@/composables/useFetch"
 import { useRoute, useRouter } from "vue-router"
 import { env } from "@/config/env"
+import { supabase } from "@/utils/supabase"
 
 const route = useRoute()
 const router = useRouter()

@@ -14,6 +14,9 @@ import TripAdd from './pages/TripAdd.vue'
 import ParticipantAdd from './pages/ParticipantAdd.vue'
 import Login from './pages/Login.vue'
 import MainLayout from './layouts/MainLayout.vue'
+import VueAwesomePaginate from "vue-awesome-paginate";
+import "vue-awesome-paginate/dist/style.css";
+
 
 const router = createRouter({
     routes: [
@@ -69,4 +72,4 @@ const router = createRouter({
     history: createWebHistory()
 })
 
-createApp(App).use(router).mount('#app')
+createApp(App).use(router).use(VueAwesomePaginate).mount('#app')

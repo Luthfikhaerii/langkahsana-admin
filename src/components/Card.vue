@@ -3,10 +3,26 @@ import {defineProps} from 'vue';
 import { useRouter } from 'vue-router';
 import DOMPurify from 'dompurify';
 import { ref } from 'vue';
+import { useFetch } from '@/composables/useFetch';
 
 const {id,title,date,description,image} = defineProps(['id','title','date','description','image'])
 const safehtml = ref(DOMPurify.sanitize(description))
 const router = useRouter()
+
+const {error,fetchData,data} = useFetch()
+
+const onDelete = async () => {
+    await fetchData('/article/'+`${id}`, {
+        method: 'DELETE',
+    })
+    if(error.value){
+        console.log(error.value)
+    } 
+    if(data.value){ 
+        alert(data.value.message)
+        router.push('/')
+    }
+}
 
 </script>
 <template>
@@ -21,7 +37,7 @@ const router = useRouter()
             <a @click="router.push('/'+id)" class="px-4 w-20 text-center py-2 bg-blue-500 rounded-lg text-xs text-white">
                 Edit
             </a>
-            <a href="#" class="px-4 w-20 text-center py-2 bg-red-500 rounded-lg text-xs text-white">
+            <a @click="onDelete" class="px-4 w-20 text-center py-2 bg-red-500 rounded-lg text-xs text-white">
                 Delete
             </a>
         </div>
